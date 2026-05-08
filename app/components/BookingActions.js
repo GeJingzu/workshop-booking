@@ -1,48 +1,95 @@
 'use client';
 
-// ===========================================================
-// PLACEHOLDER - JINGZU GE will replace this entire file.
-//
-// Contract (do not change without team agreement):
-//
-// Props:
-//   event:        full event object from GET /api/events/[id]
-//   currentUser:  current user from /api/me, or null if not logged in
-//
-// event fields available:
-//   id, organiser_id, organiser_name,
-//   title, description, location, event_date,
-//   capacity, price, status,        // 'open' | 'cancelled'
-//   bookings_count,                 // number of confirmed bookings
-//   user_has_booked,                // boolean
-//   user_booking_id                 // booking id (or null)
-//
-// Render rules (Jingzu to implement):
-//   !currentUser                              -> "Login to book" link
-//   currentUser.id === event.organiser_id     -> "This is your own event"
-//   event.status === 'cancelled'              -> "Event cancelled"
-//   bookings_count >= capacity && !booked     -> "Event is full"
-//   user_has_booked === true                  -> "Booked! [Cancel]"
-//   default                                   -> "Book Now" button
-// ===========================================================
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function BookingActions({ event, currentUser }) {
-  // Visible placeholder so the page works end-to-end before Jingzu writes
-  // the real component. Jingzu will replace this with the real UI.
-  return (
-    <div
-      style={{
+    const router = useRouter();
+    const [busy, setBusy] = useState(false);
+    const [msg, setMsg] = useState('');
+
+  async function book() {
+        setBusy(true);
+        setMsg('');
+        const res = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event_id: event.id }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+                setMsg(data.error || 'Booking failed');
+        } else {
+                setMsg('Booked!');
+                router.refresh();
+        }
+        setBusy(false);
+  }
+
+  async function cancel() {
+        if (!confirm('Cancel this booking?')) return;
+        setBusy(true);
+        setMsg('');
+        const res = await fetch('/api/bookings/' + event.user_booking_id, {
+                method: 'DELETE',
+        });
+        const data = await res.json();
+        if (!res.ok) {
+                setMsg(data.error || 'Cancel failed');
+        } else {
+                setMsg('Cancelled.');
+                router.refresh();
+        }
+        setBusy(false);
+  }
+
+  const box = {
         padding: '1rem',
         margin: '1rem 0',
-        border: '2px dashed #ccc',
+        border: '1px solid #ddd',
+        borderRadius: 6,
         background: '#fafafa',
-        color: '#666',
-      }}
-    >
-      <strong>[ BookingActions placeholder ]</strong>
-      <br />
-      Jingzu Ge will implement Book / Cancel buttons, capacity-full and
-      cancelled messages here. See contract in the file header.
-    </div>
-  );
+  };
+
+  // not logged in
+  if (!currentUser) {
+        return <div style={box}><Link href="/login">Login to book</Link></div>;
+  }
+    // own event
+  if (currentUser.id === event.organiser_id) {
+        return <div style={box}><em>This is your own event.</em></div>;
+  }
+    // cancelled by organiser
+  if (event.status === 'cancelled') {
+        return <div style={box}>Event cancelled.</div>;
+  }
+    // already booked
+  if (event.user_has_booked) {
+        return (
+                <div style={box}>
+                  <p style={{ color: 'green', margin: '0 0 .5rem' }}>You have booked this.</p>
+          <button onClick={cancel} disabled={busy}>
+  {busy ? 'Cancelling...' : 'Cancel booking'}
+</button>
+{msg && <p>{msg}</p>}
+  </div>
+     );
+}
+  // full
+  if (event.bookings_count >= event.capacity) {
+        return <div style={box}>Sorry, this event is full.</div>;
+  }
+  // default - can book
+  return (
+        <div style={box}>
+          <button onClick={book} disabled={busy}>
+  {busy ? 'Booking...' : 'Book Now'}
+</button>
+      <span style={{ marginLeft: 12, color: '#666' }}>
+{event.bookings_count}/{event.capacity} taken
+  </span>
+{msg && <p>{msg}</p>}
+  </div>
+   );
 }

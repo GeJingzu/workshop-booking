@@ -2,8 +2,7 @@
 
 // Event detail page.
 // - Public (anyone can view)
-// - Booking actions live in the <BookingActions> component, which is
-//   Jingzu Ge's responsibility (currently a placeholder).
+// - Booking actions live in the <BookingActions> component.
 // - Owner organisers and admins see Edit/Delete buttons.
 
 import { useState, useEffect } from 'react';

@@ -61,7 +61,7 @@ The other defaults (`localhost`, `root`, `workshop_booking`) usually work.
 
 > `.env.local` is in `.gitignore` so your password is never committed.
 
-### 3. Create the database schema
+### 3. Import the database (schema + sample data)
 
 ```bash
 # In PowerShell:
@@ -71,18 +71,20 @@ Get-Content mysqldump.sql | mysql -u root -p
 mysql -u root -p < mysqldump.sql
 ```
 
-This creates the `workshop_booking` database with the `users`, `events`,
-and `bookings` tables (with foreign keys and a UNIQUE constraint to
-prevent duplicate bookings).
+This creates the `workshop_booking` database, all 3 tables (with
+foreign keys and a UNIQUE constraint to prevent duplicate bookings),
+**and populates it with sample data**: 6 users (1 admin, 2 organisers,
+3 attendees), 6 events, and 6 bookings — ready to log in and use.
 
-### 4. Seed sample data
+### 4. (Optional) Re-seed from scratch
 
 ```bash
 node scripts/seed.mjs
 ```
 
-This populates the database with 6 sample users (1 admin, 2 organisers,
-3 attendees), 6 sample events, and 6 sample bookings.
+Drops all rows and re-inserts the sample data with freshly generated
+bcrypt password hashes. Useful for resetting to a known state during
+development.
 
 ### 5. Run the dev server
 

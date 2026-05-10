@@ -52,7 +52,7 @@ CREATE TABLE `bookings` (
 
 LOCK TABLES `bookings` WRITE;
 /*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
-INSERT INTO `bookings` VALUES (1,1,4,'confirmed','2026-05-09 19:49:07'),(2,1,5,'confirmed','2026-05-09 19:49:07'),(3,3,4,'confirmed','2026-05-09 19:49:07'),(4,3,6,'confirmed','2026-05-09 19:49:07'),(5,5,5,'confirmed','2026-05-09 19:49:07'),(6,6,6,'confirmed','2026-05-09 19:49:07');
+INSERT INTO `bookings` VALUES (1,1,5,'confirmed','2026-05-09 11:00:00'),(2,2,4,'confirmed','2026-05-09 11:00:00'),(3,2,5,'confirmed','2026-05-09 11:00:00'),(4,3,4,'confirmed','2026-05-09 11:00:00'),(5,3,6,'confirmed','2026-05-09 11:00:00'),(6,6,6,'confirmed','2026-05-09 11:00:00');
 /*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `events` (
 
 LOCK TABLES `events` WRITE;
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
-INSERT INTO `events` VALUES (1,2,'Beginner Yoga Workshop','Gentle 90-minute yoga session for absolute beginners. Mats provided.','Studio A, Dublin 2','2026-05-16 17:00:00',20,15.00,'open','2026-05-09 19:49:07'),(2,2,'Intermediate Yoga Flow','Vinyasa flow class for those with some yoga experience.','Studio A, Dublin 2','2026-05-23 17:00:00',20,18.00,'open','2026-05-09 19:49:07'),(3,3,'JavaScript Bootcamp','Full-day intro to modern JavaScript. Bring a laptop.','Hub Co-working, Dublin 1','2026-05-19 09:00:00',30,50.00,'open','2026-05-09 19:49:07'),(4,3,'React Crash Course','Half-day hands-on React workshop for people who know JS basics.','Hub Co-working, Dublin 1','2026-05-30 12:00:00',25,45.00,'open','2026-05-09 19:49:07'),(5,2,'Watercolour Painting','Relaxing afternoon painting session. All materials supplied.','Art Centre, Dublin 4','2026-05-14 13:00:00',12,25.00,'open','2026-05-09 19:49:07'),(6,3,'Italian Cooking Class','Make fresh pasta from scratch and a simple sauce.','Cookery School, Dublin 6','2026-05-27 18:00:00',8,60.00,'open','2026-05-09 19:49:07');
+INSERT INTO `events` VALUES (1,3,'Cooking Class','Cook a simple meal in a small group.','Kitchen B, Dublin 6','2026-05-14 17:00:00',8,40.00,'open','2026-05-09 11:00:00'),(2,2,'Yoga Class','One-hour yoga session for beginners.','Room 1, Dublin 2','2026-05-16 17:00:00',20,15.00,'open','2026-05-09 11:00:00'),(3,3,'JS Workshop','Basic JavaScript workshop for new learners.','Lab 2, Dublin 1','2026-05-19 08:00:00',30,50.00,'open','2026-05-09 11:00:00'),(4,2,'Painting Class','Relaxing painting class for beginners.','Room 3, Dublin 4','2026-05-23 09:00:00',12,25.00,'open','2026-05-09 11:00:00'),(5,2,'Photo Walk','Outdoor photo walk around Dublin city centre.','City Centre, Dublin','2026-05-30 13:00:00',15,20.00,'open','2026-05-09 11:00:00'),(6,3,'Dance Class','Beginner dance moves, no experience needed.','Hall A, Dublin 8','2026-05-27 16:00:00',20,30.00,'open','2026-05-09 11:00:00');
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +116,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Admin User','admin@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','admin','2026-05-09 19:49:07'),(2,'Alice Walker','alice@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','organiser','2026-05-09 19:49:07'),(3,'Bob Reilly','bob@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','organiser','2026-05-09 19:49:07'),(4,'Carol Singh','carol@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','attendee','2026-05-09 19:49:07'),(5,'Dave Kelly','dave@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','attendee','2026-05-09 19:49:07'),(6,'Eve Murphy','eve@workshop.com','$2b$10$NDzjyEqki/yt8stiMC9OoeNWIRx.ae4kWyceGXRSHgJK0yVlqDSO6','attendee','2026-05-09 19:49:07');
+INSERT INTO `users` VALUES (1,'Jingzu Ge','jingzu@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','admin','2026-05-09 11:00:00'),(2,'Jikun Li','jikun@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','organiser','2026-05-09 11:00:00'),(3,'A','a@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','organiser','2026-05-09 11:00:00'),(4,'abcd','abcd@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','attendee','2026-05-09 11:00:00'),(5,'B','b@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','attendee','2026-05-09 11:00:00'),(6,'C','c@workshop.com','$2b$10$iBJtI00koMgo4p1Zd9UEmOAvvUYnYrAh.rDzFNdKehA1WHwFFsdQq','attendee','2026-05-09 11:00:00');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -129,4 +129,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-09 20:57:12
+-- Dump completed on 2026-05-10  0:55:30

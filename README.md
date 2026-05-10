@@ -102,12 +102,12 @@ All sample passwords are **`password123`**.
 
 | Role | Email |
 |------|-------|
-| Admin | `admin@workshop.com` |
-| Organiser | `alice@workshop.com` |
-| Organiser | `bob@workshop.com` |
-| Attendee | `carol@workshop.com` |
-| Attendee | `dave@workshop.com` |
-| Attendee | `eve@workshop.com` |
+| Admin | `jingzu@workshop.com` |
+| Organiser | `jikun@workshop.com` |
+| Organiser | `a@workshop.com` |
+| Attendee | `abcd@workshop.com` |
+| Attendee | `b@workshop.com` |
+| Attendee | `c@workshop.com` |
 
 ---
 
@@ -123,7 +123,7 @@ workshop-booking-app/
 ├── scripts/
 │   └── seed.mjs              One-shot script to populate sample data
 │
-├── mysqldump.sql             Database schema (run once at setup)
+├── mysqldump.sql             Database schema and sample data
 ├── .env.local.example        Template for local DB credentials
 │
 └── app/                      Next.js App Router
@@ -241,12 +241,12 @@ their events and bookings automatically (referential integrity).
 
 After seeding, you should be able to:
 
-1. Visit `/login` and log in as `alice@workshop.com / password123`.
+1. Visit `/login` and log in as `jikun@workshop.com / password123`.
 2. Visit `/api/me` and see your user info as JSON.
 3. Visit `/events` and see 6 events.
-4. Search for "yoga" and see 2 events.
+4. Search for "yoga" and see Yoga Class.
 5. Click "+ Create new", create an event, edit it, then delete it.
-6. Try to edit Bob's event as Alice → the API should return 403.
+6. Try to edit A's JS Workshop as Jikun Li → the API should return 403.
 
 ---
 

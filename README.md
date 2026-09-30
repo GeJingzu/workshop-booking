@@ -1,263 +1,64 @@
-# Workshop & Class Booking — SWD Assignment 3
+# Workshop Booking
 
-A full-stack workshop booking platform built for the Griffith College Dublin
-**Server-side Web Development** module (Assignment 3, 60% weighting).
+A web app for booking workshops and classes. Jikun Li and I built it for the Server-Side Web Development module at Griffith College Dublin (May 2026).
 
-Users can register as one of three roles, browse and book workshops, or
-create and manage their own events. An admin oversees all users and the
-overall system.
+There are three kinds of users:
 
-- **Group**: Jikun Li & Jingzu Ge
-- **Module**: SWD (Semester 2)
-- **Submission**: 11 May 2026
+- **Attendees** can browse events, book a place and cancel a booking.
+- **Organisers** can do the same, plus create, edit and delete their own events.
+- **Admins** can see every user, change someone's role or delete an account.
 
----
+Anyone can browse and search the event list without logging in.
 
-## Tech stack
+## Built with
 
-| Layer | Choice |
-|-------|--------|
-| Framework | Next.js 14.2 (App Router, JavaScript) |
-| UI | React 18 |
-| Database | MySQL 8 |
-| DB driver | `mysql2` (connection pool) |
-| Auth | bcryptjs password hashing + HttpOnly cookies (`next/headers`) |
-| Style | Plain CSS + inline styles (no extra UI library) |
+Next.js 14 (App Router), React 18, MySQL 8 with `mysql2`, and `bcryptjs` for passwords. No UI library, just plain CSS.
 
-No frameworks beyond what was covered in the course are used.
+## Running it
 
----
+You need Node.js 18+ and MySQL 8 running locally.
 
-## Prerequisites
-
-Install once on your machine:
-
-1. [Node.js](https://nodejs.org/) v18 or newer (`node -v` to verify)
-2. [MySQL 8](https://dev.mysql.com/downloads/mysql/) running on `localhost:3306`
-3. Git
-
----
-
-## Setup
-
-### 1. Clone & install
-
-```bash
-git clone https://github.com/jikunli-student/Jikun_Li_Jingzu_Ge_SWD_A3.git
-cd Jikun_Li_Jingzu_Ge_SWD_A3/workshop-booking-app
+```
+git clone https://github.com/GeJingzu/workshop-booking.git
+cd workshop-booking
 npm install
-```
-
-### 2. Configure database credentials
-
-Copy the env template and edit it with your MySQL root password:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Then open `.env.local` and set `DB_PASSWORD` to your MySQL root password.
-The other defaults (`localhost`, `root`, `workshop_booking`) usually work.
-
-> `.env.local` is in `.gitignore` so your password is never committed.
-
-### 3. Import the database (schema + sample data)
-
-```bash
-# In PowerShell:
-Get-Content mysqldump.sql | mysql -u root -p
-
-# In bash / cmd:
-mysql -u root -p < mysqldump.sql
-```
-
-This creates the `workshop_booking` database, all 3 tables (with
-foreign keys and a UNIQUE constraint to prevent duplicate bookings),
-**and populates it with sample data**: 6 users (1 admin, 2 organisers,
-3 attendees), 6 events, and 6 bookings — ready to log in and use.
-
-### 4. (Optional) Re-seed from scratch
-
-```bash
-node scripts/seed.mjs
-```
-
-Drops all rows and re-inserts the sample data with freshly generated
-bcrypt password hashes. Useful for resetting to a known state during
-development.
-
-### 5. Run the dev server
-
-```bash
+cp .env.local.example .env.local     # then put your MySQL password in it
+mysql -u root -p < mysqldump.sql     # creates the database with sample data
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open http://localhost:3000.
 
----
+`node scripts/seed.mjs` resets the sample data if you mess it up.
 
-## Sample accounts
-
-All sample passwords are **`password123`**.
+Sample logins (all passwords are `password123`):
 
 | Role | Email |
-|------|-------|
-| Admin | `jingzu@workshop.com` |
-| Organiser | `jikun@workshop.com` |
-| Organiser | `a@workshop.com` |
-| Attendee | `abcd@workshop.com` |
-| Attendee | `b@workshop.com` |
-| Attendee | `c@workshop.com` |
+|---|---|
+| Admin | jingzu@workshop.com |
+| Organiser | jikun@workshop.com, a@workshop.com |
+| Attendee | abcd@workshop.com, b@workshop.com, c@workshop.com |
 
----
+## How it's put together
 
-## Project structure
+- `app/api/` holds the API routes: login/logout/me, users, events, bookings and admin user management.
+- `app/` pages are the UI (events list and detail, create/edit event, my bookings, admin pages, login, register).
+- `lib/db.js` is the MySQL connection pool, `lib/session.js` reads the logged-in user from cookies and `lib/validate.js` checks input on the server.
 
-```
-workshop-booking-app/
-├── lib/                      Shared helpers (database, sessions, validation)
-│   ├── db.js                 mysql2 connection pool
-│   ├── session.js            Cookie helpers + getCurrentUser()
-│   └── validate.js           Server-side input validation
-│
-├── scripts/
-│   └── seed.mjs              One-shot script to populate sample data
-│
-├── mysqldump.sql             Database schema and sample data
-├── .env.local.example        Template for local DB credentials
-│
-└── app/                      Next.js App Router
-    ├── layout.js             Root layout
-    ├── page.js               Home page (role-based dashboard)
-    ├── globals.css           Global styles
-    │
-    ├── api/                  Server-side API routes
-    │   ├── login/            POST  - login (bcrypt verify + set cookies)
-    │   ├── logout/           POST  - clear cookies
-    │   ├── me/               GET   - current user info
-    │   ├── users/            POST  - register; GET - admin lists users
-    │   ├── events/           GET   - list events; POST - create event
-    │   │   └── [id]/         GET / PUT / DELETE single event
-    │   ├── bookings/         POST  - book event; GET - my bookings
-    │   │   └── [id]/         DELETE - cancel a booking
-    │   └── admin/users/      Admin: list / change role / delete users
-    │       └── [id]/
-    │
-    ├── login/                Login page
-    ├── register/             Registration page
-    ├── events/               Event browsing
-    │   ├── page.js           List of all events (with search and "mine" filter)
-    │   ├── new/              Create event (organiser only)
-    │   └── [id]/
-    │       ├── page.js       Event detail page
-    │       └── edit/         Edit event (owner or admin only)
-    ├── bookings/             "My bookings" page (attendee)
-    ├── admin/                Admin dashboard + user management
-    │
-    └── components/           Reusable React components
-        ├── Navbar.js         Top navigation (role-aware)
-        ├── LoginForm.js      Used by /login
-        ├── RegistrationForm.js  Used by /register
-        ├── EventForm.js      Shared by /events/new and /events/[id]/edit
-        └── BookingActions.js Embedded in event detail page
-```
+The database has three tables: `users`, `events` and `bookings`. `bookings` has a unique key on (event, attendee) so nobody can book the same event twice, and the foreign keys cascade, so deleting a user also removes their events and bookings.
 
----
+## Security bits
 
-## Features
+- Passwords are hashed with bcrypt, never stored as plain text.
+- The session cookie is HttpOnly and SameSite=Lax.
+- Every query uses `?` placeholders, so no SQL injection.
+- Input is validated again on the server, not only in the form.
+- Role and ownership are checked on the server. For example, an organiser who tries to edit someone else's event gets a 403, even if they call the API directly.
+- Login says "Invalid email or password" either way, so it doesn't reveal which emails are registered.
 
-### Public (no login required)
-- Browse all open events (`/events`)
-- Search events by title
-- View event details (`/events/[id]`)
+## Who did what
 
-### Attendee
-- Register and login
-- Book an event (subject to capacity)
-- Cancel a booking
-- View "My bookings" (`/bookings`)
+- **Jikun Li:** project setup, database and seed script, the `lib/` helpers, login/register, and the whole events module.
+- **Jingzu Ge (me):** the bookings module (book and cancel APIs, My Bookings page, the booking buttons on the event page), the admin module (user list, change role, delete user), the navbar and the role-aware home page.
 
-### Organiser
-- Everything an attendee can do
-- Create new events (`/events/new`)
-- Edit and delete their own events
-- Toggle "Show my events only" on the event list
-
-### Admin
-- View list of all users (`/admin/users`)
-- Change a user's role
-- Delete a user (cascades to their events and bookings, with a confirmation prompt)
-- Cannot delete their own account
-
----
-
-## Security measures (Class 7, 9)
-
-- **Password hashing**: bcrypt with cost factor 10. Plain-text passwords never touch the database.
-- **HttpOnly cookies**: session cookies cannot be read by JavaScript, mitigating XSS theft.
-- **SameSite=Lax**: cookies are not sent on third-party requests, mitigating CSRF.
-- **Parameterised queries**: every SQL query uses `?` placeholders. No string concatenation, so SQL injection is not possible.
-- **Server-side validation**: all input is re-validated on the server (`lib/validate.js`). Client-side validation is convenience only.
-- **Generic error messages**: e.g. login returns "Invalid email or password" rather than telling the attacker whether the email exists.
-- **No stack traces in responses**: server errors are logged with `console.error()` but the client only sees a generic message.
-- **Role-based authorization**: protected actions (creating events, deleting users, etc.) check `currentUser.role` on the server, not just hide a button on the frontend.
-- **Ownership checks**: editing/deleting an event verifies that the current user owns it (or is an admin) before running the SQL.
-
----
-
-## Database design (Class 8)
-
-```
-users                          events                          bookings
-─────                          ──────                          ────────
-id PK                          id PK                           id PK
-name                           organiser_id  FK ──> users.id   event_id      FK ──> events.id
-email UNIQUE                   title                           attendee_id   FK ──> users.id
-password_hash                  description                     status
-role ENUM(...)                 location                        created_at
-created_at                     event_date
-                               capacity                        UNIQUE(event_id, attendee_id)
-                               price                           ─────────────────────────────
-                               status ENUM(open, cancelled)    Prevents the same attendee
-                               created_at                      from booking the same event
-                                                               twice.
-```
-
-`ON DELETE CASCADE` on both foreign keys means deleting a user removes
-their events and bookings automatically (referential integrity).
-
----
-
-## Division of labour
-
-| Member | Modules | Approximate share |
-|--------|---------|-------------------|
-| **Jikun Li** | Database schema (mysqldump + seed), `lib/` helpers (db / session / validate), authentication APIs (`/api/login` / `/api/logout` / `/api/me` / `/api/users`), login & register pages and forms, full Events module (API + list / detail / new / edit pages, EventForm component) | ~50% |
-| **Jingzu Ge** | Bookings module (API + UI + BookingActions component), Admin module (user management API + pages), Navbar and global UI shell (`layout.js`, `page.js`, `globals.css`), README documentation, screenshots and demo video | ~50% |
-
----
-
-## Running tests / smoke check
-
-After seeding, you should be able to:
-
-1. Visit `/login` and log in as `jikun@workshop.com / password123`.
-2. Visit `/api/me` and see your user info as JSON.
-3. Visit `/events` and see 6 events.
-4. Search for "yoga" and see Yoga Class.
-5. Click "+ Create new", create an event, edit it, then delete it.
-6. Try to edit A's JS Workshop as Jikun Li → the API should return 403.
-
----
-
-## Course references
-
-This project draws on patterns from:
-
-- **Class 1, 2, The setup**: Next.js App Router, project setup
-- **Class 3, 4**: components, hooks, sticky forms
-- **Class 5**: API endpoints, error handling, regex
-- **Class 7**: bcrypt hashing, XSS / CSRF protections, server-side validation, error handling without leaking stack traces
-- **Class 8**: MySQL connection pool, foreign keys, JOINs, referential integrity
-- **Class 9**: parameterised queries to prevent SQL injection, cookie-based sessions, mysqldump for backup
-- **Class 10, 12**: role-based UI, protected routes, multi-user concurrency
+The commit history shows the split. This is a copy of our original repo, so the commits are the same.
